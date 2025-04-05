@@ -7,11 +7,6 @@ import (
 	"github.com/tjarratt/babble"
 )
 
-type result struct {
-	input   string
-	reverse string
-}
-
 func main() {
 	babbler := babble.NewBabbler()
 	babbler.Separator = " "
