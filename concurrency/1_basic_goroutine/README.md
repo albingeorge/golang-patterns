@@ -27,3 +27,31 @@ Here we have multiple implementations.
     This can however come in handy in certain scenarios.
 
     For example, say `WorkingReverseSingleGoroutine` takes 50ms to process the words. And in the meantime if the main thread want to make an http call which takes longer to process. In this case, if the host has multiple cores, the main thread and the goroutine would run in parallel, thus saving time.
+
+4. `ReverseMultipleGoroutines`
+
+    `ReverseMultipleGoroutines` solves all of the problems mentioned above.
+
+    1. Has multiple goroutines, each which can run the core logic which takes time concurrently
+    2. Does not have a race condition, since we're using a Mutex when writing to the result array
+    3. Makes use of WaitGroup to ensure that all the goroutines are processed before returning result
+
+## Benchmarks
+
+These are the benchmark results.
+
+```sh
+$ go test -bench=.
+goos: darwin
+goarch: arm64
+pkg: github.com/albingeorge/golang-patterns/concurrency/1_basic_goroutine
+cpu: Apple M1
+BenchmarkWorkingReverseSingleGoroutine-8   	       1	50968679417 ns/op
+BenchmarkReverseMultipleGoroutines-8       	      22	  51789165 ns/op
+PASS
+ok  	github.com/albingeorge/golang-patterns/concurrency/1_basic_goroutine	53.178s
+```
+
+Here, the `ReverseMultipleGoroutines` has much higher lower ns/op, since it ran each call of the `libs.Reverse()` function concurrently.
+
+> Note: I've not written benchmarks for the functions `BadReverseMultipleGoroutines` and `BadReverseSingleGoroutine`, since they run in constant time and would not yield the right results depending on the number of words to process.

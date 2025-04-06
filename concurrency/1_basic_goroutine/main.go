@@ -17,7 +17,8 @@ func main() {
 	fmt.Printf("Input :\n%v\n", words)
 	// res := BadReverseMultipleGoroutines(words)
 	// res := BadReverseSingleGoroutine(words)
-	res := WorkingReverseSingleGoroutine(words)
+	// res := WorkingReverseSingleGoroutine(words)
+	res := ReverseMultipleGoroutines(words)
 
 	fmt.Printf("Results :\n%+v\n", res)
 	if len(words) != len(res) {
