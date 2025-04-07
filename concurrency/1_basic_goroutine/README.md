@@ -28,6 +28,16 @@ Here we have multiple implementations.
 
     For example, say `WorkingReverseSingleGoroutine` takes 50ms to process the words. And in the meantime if the main thread want to make an http call which takes longer to process. In this case, if the host has multiple cores, the main thread and the goroutine would run in parallel, thus saving time.
 
+    Diagram:
+
+    ```mermaid
+    flowchart LR
+        A[start] --> |main thread| C[end]
+        A --> B(WorkingReverseSingleGoroutine)
+        B --> C
+
+    ```
+
 4. `ReverseMultipleGoroutines`
 
     `ReverseMultipleGoroutines` solves all of the problems mentioned above.
@@ -35,6 +45,24 @@ Here we have multiple implementations.
     1. Has multiple goroutines, each which can run the core logic which takes time concurrently
     2. Does not have a race condition, since we're using a Mutex when writing to the result array
     3. Makes use of WaitGroup to ensure that all the goroutines are processed before returning result
+
+    Diagram:
+
+    ```mermaid
+    flowchart LR
+        A[start] --> C1(word1)
+        A --> C2(word2)
+        A --> C3(word3)
+        subgraph ReverseMultipleGoroutines
+            C1
+            C2
+            C3
+            end
+
+        C1 --> B[end]
+        C2 --> B
+        C3 --> B
+    ```
 
 ## Benchmarks
 
