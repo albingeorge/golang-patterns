@@ -22,20 +22,18 @@ Here we have multiple implementations.
 
 3. `WorkingReverseSingleGoroutine`
 
-    This implementation solves the problem of having to wait using `time.Sleep`. This means that the result would always contain the result of all the processed words. However, it still loops through the words within the single goroutine and hence is not much useful in most cases.
+    This implementation solves the problem of having to wait using `time.Sleep`. This means that the result would always contain the result of all the processed words.
 
-    This can however come in handy in certain scenarios.
-
-    For example, say `WorkingReverseSingleGoroutine` takes 50ms to process the words. And in the meantime if the main thread want to make an http call which takes longer to process. In this case, if the host has multiple cores, the main thread and the goroutine would run in parallel, thus saving time.
+    However, it still loops through the words within the single goroutine and this also makes the main thread wait till this goroutine is done processing. Hence, this does not bring any additional value and only adds to the complexity of implementation.
 
     Diagram:
 
     ```mermaid
     flowchart LR
-        A[start] --> |main thread| C[end]
-        A --> B(WorkingReverseSingleGoroutine)
-        B --> C
-
+        A[start] --> |1| B(main thread)
+        B --> |2| C(WorkingReverseSingleGoroutine)
+        C --> |3| B
+        B --> |4| D[end]
     ```
 
 4. `ReverseMultipleGoroutines`
